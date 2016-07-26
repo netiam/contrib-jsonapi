@@ -73,7 +73,9 @@ export default function({baseUrl = '/'}) {
       res.body.meta = res.meta
     }
 
-    res.body.links = links(req, res, baseUrl)
+    if (res.body) {
+      res.body.links = links(req, res, baseUrl)
+    }
 
     res.json(res.body)
   }
