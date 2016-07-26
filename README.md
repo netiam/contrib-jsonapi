@@ -9,9 +9,14 @@
 ## Example
 
 ```js
-netiam()
-  .jsonapi.req(…)
-  .jsonapi.res(…)
+app.get(
+  '/users',
+  api()
+    .auth(…)
+    .rest(…)
+    .acl.res(…)
+    .jsonapi({…})
+)
 ```
 
 ## License
