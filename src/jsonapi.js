@@ -60,6 +60,8 @@ function links(req, res) {
       self: baseUrl
     }
   }
+
+  return null
 }
 
 export default function() {
