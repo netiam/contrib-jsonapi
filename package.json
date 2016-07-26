@@ -1,7 +1,7 @@
 {
   "name": "netiam-contrib-jsonapi",
   "description": "REST API library",
-  "main": "lib/data.js",
+  "main": "lib/jsonapi.js",
   "scripts": {
     "build": "./bin/build",
     "clean": "./bin/clean",
