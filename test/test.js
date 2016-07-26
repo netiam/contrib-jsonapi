@@ -115,7 +115,7 @@ describe('netiam', () => {
         .expect('Content-Type', /json/)
         .expect(res => {
           const json = res.body
-          console.log(json)
+
           json.should.be.an.Object()
           json.should.have.properties(['data', 'included', 'links'])
           json.data.should.be.Array()
