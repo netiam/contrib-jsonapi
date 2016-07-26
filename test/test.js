@@ -1,6 +1,5 @@
 import request from 'supertest'
 import uuid from 'uuid'
-import util from 'util'
 import Promise from 'bluebird'
 import appMock from './utils/app'
 import projectFixture from './fixtures/project'
