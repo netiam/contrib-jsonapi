@@ -49,6 +49,7 @@ function links(req, res, baseUrl) {
 
   // body
   if (_.isArray(body.data)) {
+    // TODO determine type differently
     if (body.data.length > 0) {
       const type = body.data[0].type
       return {
