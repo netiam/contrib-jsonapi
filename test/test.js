@@ -61,24 +61,45 @@ describe('netiam', () => {
             ]
           })
         })
-        .then(users => {
-          /*console.log(
-            util.inspect(
-              users.map(user => user.toJSON()),
-              {depth: null}
-            )
-          )*/
-        })
         .then(() => done())
         .catch(done)
     })
 
     it('should fetch user', done => {
       request(app)
-        .get(`/users/${user.id}`)
+        .get(`/users/${user.id}?include=projects`)
         .set('Accept', 'application/json')
         .expect(200)
         .expect('Content-Type', /json/)
+        .expect(res => {
+          const json = res.body
+
+          json.should.be.an.Object()
+          json.should.have.properties(['data', 'included', 'links'])
+          json.data.should.be.Object()
+          json.data.should.have.properties([
+            'id',
+            'type',
+            'attributes',
+            'relationships',
+            'links'
+          ])
+          json.data.relationships.should.be.Object()
+          json.data.relationships.should.have.properties([
+            'projects'
+          ])
+
+          json.included.should.be.Array()
+          json.included.should.have.length(1)
+          json.included[0].should.have.properties([
+            'id',
+            'type',
+            'attributes',
+            'links'
+          ])
+          json.included[0].type.should.eql('project')
+          json.included[0].links.should.have.properties(['self'])
+        })
         .end(err => {
           if (err) {
             return done(err)
@@ -89,10 +110,40 @@ describe('netiam', () => {
 
     it('should fetch users', done => {
       request(app)
-        .get('/users')
+        .get('/users?include=projects')
         .set('Accept', 'application/json')
         .expect(200)
         .expect('Content-Type', /json/)
+        .expect(res => {
+          const json = res.body
+
+          json.should.be.an.Object()
+          json.should.have.properties(['data', 'included', 'links'])
+          json.data.should.be.Array()
+          json.data.should.have.length(10)
+          json.data[0].should.have.properties([
+            'id',
+            'type',
+            'attributes',
+            'relationships',
+            'links'
+          ])
+          json.data[0].relationships.should.be.Object()
+          json.data[0].relationships.should.have.properties([
+            'projects'
+          ])
+
+          json.included.should.be.Array()
+          json.included.should.have.length(1)
+          json.included[0].should.have.properties([
+            'id',
+            'type',
+            'attributes',
+            'links'
+          ])
+          json.included[0].type.should.eql('project')
+          json.included[0].links.should.have.properties(['self'])
+        })
         .end(err => {
           if (err) {
             return done(err)
