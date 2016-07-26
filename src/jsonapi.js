@@ -22,7 +22,7 @@ function links(req, res, baseUrl) {
   const body = res.body
 
   // resource objects
-  if (_.isArray(body.data) && body.data.length > 0) {
+  if (_.isArray(body.data)) {
     body.data.forEach(document => {
       document.links = documentLinks(req, baseUrl, document)
       if (document.relationships) {
@@ -48,10 +48,12 @@ function links(req, res, baseUrl) {
   }
 
   // body
-  if (_.isArray(body.data) && body.data.length > 0) {
-    const type = body.data[0].type
-    return {
-      self: `${req.protocol}://${req.get('host')}${baseUrl}/${pluralize(type)}`
+  if (_.isArray(body.data)) {
+    if (body.data.length > 0) {
+      const type = body.data[0].type
+      return {
+        self: `${req.protocol}://${req.get('host')}${baseUrl}/${pluralize(type)}`
+      }
     }
   } else if (_.isObject(res.body.data)) {
     const {id, type} = res.body.data
