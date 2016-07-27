@@ -27,6 +27,9 @@ function links(req, res, type) {
       document.links = documentLinks(req, document)
       if (document.relationships) {
         _.forEach(document.relationships, (val, key) => {
+          if (!val) {
+            return
+          }
           document.relationships[key].links = relationshipLinks(req, document, key)
         })
       }
@@ -35,6 +38,9 @@ function links(req, res, type) {
     body.data.links = documentLinks(req, body.data)
     if (body.data.relationships) {
       _.forEach(body.data.relationships, (val, key) => {
+        if (!val) {
+          return
+        }
         body.data.relationships[key].links = relationshipLinks(req, body.data, key)
       })
     }
