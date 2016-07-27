@@ -12,42 +12,42 @@ export default function(app) {
     '/projects',
     netiam({plugins})
       .rest({model: Project})
-      .jsonapi({baseUrl: '/v2'})
+      .jsonapi({model: Project})
   )
 
   router.post(
     '/users',
     netiam({plugins})
       .rest({model: User})
-      .jsonapi({baseUrl: '/v2'})
+      .jsonapi({model: Project})
   )
 
   router.get(
     '/users',
     netiam({plugins})
       .rest({model: User})
-      .jsonapi({baseUrl: '/v2'})
+      .jsonapi({model: Project})
   )
 
   router.get(
     '/users/:id',
     netiam({plugins})
       .rest({model: User})
-      .jsonapi({baseUrl: '/v2'})
+      .jsonapi({model: Project})
   )
 
   router.put(
     '/users/:id',
     netiam({plugins})
       .rest({model: User})
-      .jsonapi({baseUrl: '/v2'})
+      .jsonapi({model: Project})
   )
 
   router.delete(
     '/users/:id',
     netiam({plugins})
       .rest({model: User})
-      .jsonapi({baseUrl: '/v2'})
+      .jsonapi({model: Project})
   )
 
   app.use('/', router)

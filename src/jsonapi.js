@@ -1,41 +1,41 @@
 import _ from 'lodash'
 import pluralize from 'pluralize'
 
-function documentLinks(req, baseUrl, document) {
+function documentLinks(req, document) {
   const {id, type} = document
-  const url = `${req.protocol}://${req.get('host')}${baseUrl}/${pluralize(type)}/${id}`
+  const url = `${req.protocol}://${req.get('host')}${req.config.baseUrl}/${pluralize(type)}/${id}`
   return {
     self: url
   }
 }
 
-function relationshipLinks(req, baseUrl, document, relationship) {
+function relationshipLinks(req, document, relationship) {
   const {id, type} = document
-  const url = `${req.protocol}://${req.get('host')}${baseUrl}/${pluralize(type)}/${id}`
+  const url = `${req.protocol}://${req.get('host')}${req.config.baseUrl}/${pluralize(type)}/${id}`
   return {
     self: `${url}/relationships/${relationship}`,
     related: `${url}/${relationship}`
   }
 }
 
-function links(req, res, baseUrl) {
+function links(req, res, type) {
   const body = res.body
 
   // resource objects
   if (_.isArray(body.data)) {
     body.data.forEach(document => {
-      document.links = documentLinks(req, baseUrl, document)
+      document.links = documentLinks(req, document)
       if (document.relationships) {
         _.forEach(document.relationships, (val, key) => {
-          document.relationships[key].links = relationshipLinks(req, baseUrl, document, key)
+          document.relationships[key].links = relationshipLinks(req, document, key)
         })
       }
     })
   } else if (_.isObject(body.data)) {
-    body.data.links = documentLinks(req, baseUrl, body.data)
+    body.data.links = documentLinks(req, body.data)
     if (body.data.relationships) {
       _.forEach(body.data.relationships, (val, key) => {
-        body.data.relationships[key].links = relationshipLinks(req, baseUrl, body.data, key)
+        body.data.relationships[key].links = relationshipLinks(req, body.data, key)
       })
     }
   }
@@ -43,30 +43,28 @@ function links(req, res, baseUrl) {
   // includes
   if (_.isArray(body.included) && body.included.length > 0) {
     body.included.forEach(document => {
-      document.links = documentLinks(req, baseUrl, document)
+      document.links = documentLinks(req, document)
     })
   }
 
   // body
   if (_.isArray(body.data)) {
-    // TODO determine type differently
-    if (body.data.length > 0) {
-      const type = body.data[0].type
-      return {
-        self: `${req.protocol}://${req.get('host')}${baseUrl}/${pluralize(type)}`
-      }
+    return {
+      self: `${req.protocol}://${req.get('host')}${req.config.baseUrl}/${pluralize(type)}`
     }
   } else if (_.isObject(res.body.data)) {
-    const {id, type} = res.body.data
+    const {id} = res.body.data
     return {
-      self: `${req.protocol}://${req.get('host')}${baseUrl}/${pluralize(type)}/${id}`
+      self: `${req.protocol}://${req.get('host')}${req.config.baseUrl}/${pluralize(type)}/${id}`
     }
   }
 
   return null
 }
 
-export default function({baseUrl = '/'}) {
+export default function({model}) {
+
+  const type = _.kebabCase(model.name)
 
   return function(req, res) {
     if (res.meta) {
@@ -74,7 +72,7 @@ export default function({baseUrl = '/'}) {
     }
 
     if (res.body) {
-      res.body.links = links(req, res, baseUrl)
+      res.body.links = links(req, res, type)
     }
 
     res.json(res.body)
