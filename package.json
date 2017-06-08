@@ -19,7 +19,7 @@
     "bluebird": "^3.1.1",
     "pluralize": "^5.0.0",
     "lodash": "^4.14.0",
-    "sequelize": "^3.24.4"
+    "sequelize": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.18.0",
